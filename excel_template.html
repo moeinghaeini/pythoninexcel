@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Market Explorer - Excel Template</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .python-cell { background-color: #f0f8ff; padding: 10px; margin: 5px 0; border-left: 4px solid #0078d4; }
+        .instruction { background-color: #fff3cd; padding: 10px; margin: 5px 0; border-left: 4px solid #ffc107; }
+    </style>
+</head>
+<body>
+    <h1>Job Market Explorer - Excel Template</h1>
+    <p><strong>Instructions:</strong> Copy this structure into Excel and add Python-enabled cells where indicated.</p>
+    
+    <div class="section">
+        <h2>Sheet 1: Data Input</h2>
+        <div class="instruction">
+            <strong>Instructions:</strong> Load your job data here. Use the sample data from sample_data/jobs_sample.csv
+        </div>
+        
+        <h3>Python Cell A1: Load Data</h3>
+        <div class="python-cell">
+            <pre>
+# Load job data
+import pandas as pd
+from python_functions import load_job_data
+
+# Load the sample data
+df = load_job_data('sample_data/jobs_sample.csv')
+df.head(10)
+            </pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Sheet 2: Filter Controls</h2>
+        <div class="instruction">
+            <strong>Instructions:</strong> These cells will contain the filter controls and Python functions
+        </div>
+        
+        <h3>Filter Parameters (Cells B2-B8)</h3>
+        <table border="1" style="border-collapse: collapse;">
+            <tr><td>B2</td><td>Job Title Filter</td><td>All</td></tr>
+            <tr><td>B3</td><td>Location Filter</td><td>All</td></tr>
+            <tr><td>B4</td><td>Min Salary</td><td>50000</td></tr>
+            <tr><td>B5</td><td>Max Salary</td><td>150000</td></tr>
+            <tr><td>B6</td><td>Min Experience</td><td>1</td></tr>
+            <tr><td>B7</td><td>Max Experience</td><td>10</td></tr>
+            <tr><td>B8</td><td>Keyword Search</td><td>python</td></tr>
+        </table>
+
+        <h3>Python Cell C10: Apply Filters</h3>
+        <div class="python-cell">
+            <pre>
+# Apply filters based on control values
+from python_functions import filter_jobs
+
+# Get filter values from cells (you'll need to reference actual Excel cells)
+filtered_df = filter_jobs(
+    df,
+    job_title=xl("B2"),  # Reference to Job Title filter
+    location=xl("B3"),   # Reference to Location filter
+    min_salary=xl("B4"), # Reference to Min Salary
+    max_salary=xl("B5"), # Reference to Max Salary
+    min_experience=xl("B6"), # Reference to Min Experience
+    max_experience=xl("B7"), # Reference to Max Experience
+    keyword=xl("B8")     # Reference to Keyword Search
+)
+
+filtered_df
+            </pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Sheet 3: Analysis Dashboard</h2>
+        
+        <h3>Python Cell D2: Job Summary</h3>
+        <div class="python-cell">
+            <pre>
+# Get job market summary
+from python_functions import get_job_summary
+
+summary = get_job_summary(filtered_df)
+summary
+            </pre>
+        </div>
+
+        <h3>Python Cell D5: Salary Statistics</h3>
+        <div class="python-cell">
+            <pre>
+# Calculate salary statistics
+from python_functions import calculate_salary_stats
+
+salary_stats = calculate_salary_stats(filtered_df)
+salary_stats
+            </pre>
+        </div>
+
+        <h3>Python Cell D8: Top Job Titles</h3>
+        <div class="python-cell">
+            <pre>
+# Show top job titles by count
+top_titles = filtered_df['Job Title'].value_counts().head(5)
+top_titles
+            </pre>
+        </div>
+
+        <h3>Python Cell D12: Top Locations</h3>
+        <div class="python-cell">
+            <pre>
+# Show top locations by count
+top_locations = filtered_df['Location'].value_counts().head(5)
+top_locations
+            </pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Sheet 4: Visualizations</h2>
+        
+        <h3>Python Cell E2: Salary Chart</h3>
+        <div class="python-cell">
+            <pre>
+# Create salary visualization
+from python_functions import create_salary_chart
+import matplotlib.pyplot as plt
+
+fig = create_salary_chart(filtered_df)
+plt.show()
+            </pre>
+        </div>
+
+        <h3>Python Cell E15: Location Chart</h3>
+        <div class="python-cell">
+            <pre>
+# Create location visualization
+from python_functions import create_location_chart
+
+fig = create_location_chart(filtered_df)
+plt.show()
+            </pre>
+        </div>
+
+        <h3>Python Cell E28: Experience Chart</h3>
+        <div class="python-cell">
+            <pre>
+# Create experience visualization
+from python_functions import create_experience_chart
+
+fig = create_experience_chart(filtered_df)
+plt.show()
+            </pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Sheet 5: Export</h2>
+        
+        <h3>Python Cell F2: Export Filtered Data</h3>
+        <div class="python-cell">
+            <pre>
+# Export filtered results
+from python_functions import export_filtered_data
+
+result = export_filtered_data(filtered_df, 'filtered_jobs_export.xlsx')
+result
+            </pre>
+        </div>
+
+        <h3>Python Cell F5: Export Summary Report</h3>
+        <div class="python-cell">
+            <pre>
+# Create and export summary report
+import pandas as pd
+
+# Create summary report
+report_data = {
+    'Metric': ['Total Jobs', 'Average Salary', 'Top Location', 'Top Company'],
+    'Value': [
+        len(filtered_df),
+        f"${filtered_df['Salary'].mean():,.2f}",
+        filtered_df['Location'].mode().iloc[0] if not filtered_df.empty else 'N/A',
+        filtered_df['Company'].mode().iloc[0] if not filtered_df.empty else 'N/A'
+    ]
+}
+
+report_df = pd.DataFrame(report_data)
+report_df.to_excel('job_market_summary.xlsx', index=False)
+"Summary report exported to job_market_summary.xlsx"
+            </pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Setup Instructions for Excel</h2>
+        <div class="instruction">
+            <h3>Step 1: Enable Python in Excel</h3>
+            <ol>
+                <li>Open Excel and go to Insert > Get Add-ins</li>
+                <li>Search for "Python in Excel" and install it</li>
+                <li>Enable Python in Excel in your Excel settings</li>
+            </ol>
+            
+            <h3>Step 2: Create the Workbook Structure</h3>
+            <ol>
+                <li>Create 5 sheets: "Data Input", "Filter Controls", "Analysis Dashboard", "Visualizations", "Export"</li>
+                <li>Copy the Python code from the cells above into Python-enabled cells in Excel</li>
+                <li>Make sure the python_functions.py file is in the same directory as your Excel file</li>
+            </ol>
+            
+            <h3>Step 3: Load Sample Data</h3>
+            <ol>
+                <li>Use the sample data from sample_data/jobs_sample.csv</li>
+                <li>Or load your own job data in the same format</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
